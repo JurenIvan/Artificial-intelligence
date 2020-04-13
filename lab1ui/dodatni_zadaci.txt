@@ -1,0 +1,80 @@
+Dodatni 
+1.
+Učitan broj stanja kod slagalice je 181440 dok je ukupan broj mogućih stanja slagalice 9! = 362880 što je dvostruko više.
+
+Slagalicu je moguće riješiti iz samo pola stanja.
+Primjer nerješive slagalice
+1 | 2 | 3
+4 | 5 | 6
+8 | 7 | _
+
+Dokaz da je konačno stanje dosegljivo iz samo (točno) pola stanja proizlazi iz tvrdnje da postoje 2 disjunktna skupa stanja.
+pripadnost skupu stanja definirano parnošću funkcije F
+Ta funkcija mora biti takva da za neko stanje u jednom skupu daje parne vrijednosti, a za drugu skupinu stanja daje neparne vrijednosti.
+Primjer takve funkcije je sljedeći:    funkcija F prebrojava koliko je brojeva u tzv. inverznom položaju gdje je "inverznih položaj" za neko stanje definiran kao stanje u kojem je neki komadić puzzle ispred komadića s manjom vrijednošću. (Na na primjeru iznad vrijednost funkcije je 1 jer se samo 8 nalazi 7)
+Razmotrimo dozvoljene poteze i njihov utjecaj na zadanu funkciju.
+1) Horizontalni pomaci -> nemaju utjecaj na funkciju jer uvijek mijenjamo jedan komadić s brojem i prazninu sto nam ne daje promjenu u redoslijedu brojeva
+2) Vertikalni pomaci -> vertikalni pomak može imati dva rezultata-> funkcija novog stanja je +-2 od funkcije početnog stanja jer se broj pomakne za 2 mjesta u našem nizu brojeva.
+
+Iz ovog slijedi da ako je funkcija za neko stanje dala parni rezultat, da neovisno o svim potezima davati parni rezultat. Posto u konačnom stanju funkcija daje 0.
+Stanja iz kojih je konačno stanje dosezljivo daju paran rezultat funkcije.
+
+Ostalo je još samo pokazati da je u oba stanja ostao bas jednak broj stanja.
+Uzmimo primjer slagalice naveden iznad.
+Ako definiramo da je to pozitivan ishod (rješenje) slagalice tada za svaki potez učinjen u ovoj verziji slagalice postoji jednak potez u originalnoj verziji.
+Iz toga slijedi da je broj dosegljivi stanja u oba slučaja jednak.
+Obrat ove tvrdnje govori da je iz jednakog broja stanja moguće doci do konačnih stanja. \
+Sto znaci da su ove dvije particije ukupnog skupa stanja jednake veličine.
+
+U slagalici 4x4 trebamo analizirati sto se događa kod vertikalnog i horizontalnog pomaka.
+	1)Horizontalni 	-> nema promjene
+	2)Vertikalni 	-> +-3
+Posto vertikalni pomaci daju neparni broj bitno je vidjeti koliko će biti tih poteza.
+Ako je prazno polje na parnom retku (2. ili 4.) tada će paran broj vertikalnih poteza rezultirati da funkcija završi na parnom broju.
+
+Broj disjunktnih skupova je 3*2 stoga je 15!/6 stanja iz koje je konačno stanje dosezljivo. (2-> prazno polje na parnom ili neparnom polju, 3->funkcija inverznosti može biti (2n+1) (2n+2) (2n))
+Jednakost veličine svih skupova proizlazi iz iste argumentacije kao kod 3x3.
+
+
+
+2.
+Složenost moje implementacije->
+O(b*S*log S) -> za svako stanje moram proći sve tranzicije te dodam u listu čvorova za istražiti. Dodavanje u sortiranu listu je log n složenost.
+i nakon toga još dvaput prođem kroz sve tranzicije da provjerim optimističnost i konzistentnost sto je O(b*S) * 2
+
+ukupno O(b*S*logS+2*b*S)=O(b*S*logS)
+
+Posto je rješenje poprilično optimalno, i implementacija je u javi. Svaku konfiguraciju ću izvrtjeti 100 puta (JIT compiler)
+konfiguracija | vrijeme da se 100 puta izračuna optimalnost i konzistentnost za jedno rješenje slagalice
+
+123_x74_658  28.6244911
+478_523_16x  27.7309656
+318_425_67x  27.5650341
+843_267_51x  27.6919725
+573_864_12x  27.7289195
+713_845_62x  27.4989996
+273_641_85x  27.5919657
+236_517_48x  27.7707101
+531_764_28x  27.6447422
+816_374_25x  27.3879709
+
+avg		=	27.72357713
+stdev	=	 0.320419802
+
+bez prvog uzorka (zanemarivanje JIT)
+avg		=	27.62347558
+stdev	=	 0.11778494
+
+Nisam implementirao naivnu implementaciju pa nemam s čime usporediti.
+
+
+3.
+Možemo zanemariti prazni element i tada je heuristika optimistična i konzistentna (isto kao na predavanju)
+
+predložene heuristike:
+	IsInRightRow		 -> prosjecno posjecena stanja -> 11387
+	Default				 ->	prosjecna posjecena stanja -> 6480
+	Misplaced heuristic  -> prosjecna posjecena stanja -> 6155
+	Euclidean heuristic	 -> prosjecna posjecena stanja -> 2164
+	Manhattn heuristic	 -> prosjecna posjecena stanja -> 982
+	Oracle heuristic	 -> prosjecna posjecena stanja -> 21
