@@ -14,9 +14,9 @@ public class CommandResolve extends AbstractCommand {
     public CommandResolve(String commandLine) {
         commandLine = commandLine.trim();
         if (commandLine.startsWith("~"))
-            this.clause = new Clause(Map.of(commandLine.substring(1), false), -1, -1);
+            this.clause = new Clause(Map.of(commandLine.substring(1), false), null, null);
         else
-            this.clause = new Clause(Map.of(commandLine, true), -1, -1);
+            this.clause = new Clause(Map.of(commandLine, true), null, null);
     }
 
     @Override

@@ -10,8 +10,8 @@ public class Clause {
 
     private int id;
     private Map<String, Boolean> literals;
-    private int derivedFirst;
-    private int derivedSecond;
+    private Clause derivedFirst;
+    private Clause derivedSecond;
 
     public static Clause parse(String line) {
         HashMap<String, Boolean> literals = new HashMap<>();
@@ -25,16 +25,16 @@ public class Clause {
             else literals.put(token, false);
         }
 
-        return new Clause(literals, -1, -1);
+        return new Clause(literals, null, null);
     }
 
-    public Clause(Map<String, Boolean> literals, int derivedFirst, int derivedSecond) {
+    public Clause(Map<String, Boolean> literals, Clause derivedFirst, Clause derivedSecond) {
         this.literals = literals;
         this.derivedFirst = derivedFirst;
         this.derivedSecond = derivedSecond;
     }
 
-    public Clause(int id, Map<String, Boolean> literals, int derivedFirst, int derivedSecond) {
+    public Clause(int id, Map<String, Boolean> literals, Clause derivedFirst, Clause derivedSecond) {
         this.id = id;
         this.literals = literals;
         this.derivedFirst = derivedFirst;
@@ -89,17 +89,17 @@ public class Clause {
     }
 
     public String toString() {
-        if (derivedFirst != -1 && derivedSecond != -1)
-            return String.format("%3d.  %s (%d,%d)", id, literalsToString(), derivedFirst, derivedSecond);
+        if (derivedFirst != null && derivedSecond != null)
+            return String.format("%3d.  %s (%d,%d)", id, literalsToString(), derivedFirst.id, derivedSecond.id);
         return String.format("%3d.  %s", id, literalsToString());
     }
 
     private String literalsToString() {
-        if(literals.isEmpty()) return "NILL";
+        if (literals.isEmpty()) return "NILL";
         StringBuilder sb = new StringBuilder();
         for (var literal : literals.entrySet())
             sb.append(literal.getValue() ? "~" : "").append(literal.getKey()).append(" v ");
-        sb.setLength(sb.length()-2);
+        sb.setLength(sb.length() - 2);
         return sb.toString();
     }
 
@@ -114,7 +114,7 @@ public class Clause {
                 literals_combined.put(literalEntry.getKey(), literalEntry.getValue());
         }
 
-        return new Clause(literals_combined, id, second.id);
+        return new Clause(literals_combined, this, second);
     }
 
 
