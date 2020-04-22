@@ -4,10 +4,7 @@ import ui.model.Clause;
 import ui.model.Pair;
 import ui.model.Relation;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static ui.model.Relation.*;
 
@@ -41,12 +38,14 @@ public class BOK {
             list.get(i).setId(Clause.counter++);
     }
 
-    public Set<Clause> resolve(Clause clause) {
+    public Collection<Clause> resolve(Clause clause, Mode mode) {
         numerateClauses(clauses);
         clause.setId(Clause.counter++);
-        Set<Clause> oldClauses = new HashSet<>(clauses);
+
         Set<Clause> newClauses = new HashSet<>();
-        List<Clause> allClauses = new ArrayList<>(clauses);
+        Set<Clause> oldClauses = new HashSet<>(clauses);
+        List<Clause> allClauses = new ArrayList<>();
+
         newClauses.add(clause);
         allClauses.add(clause);
 
@@ -55,15 +54,15 @@ public class BOK {
                 Clause resolvent = pair.getFirst().resolve(pair.getSecond());
                 if (resolvent.getLiterals().isEmpty()) {
                     allClauses.add(resolvent);
-                    newClauses.add(resolvent);  //fount
-                    return newClauses;
+                    newClauses.add(resolvent);
+                    return mode == Mode.LOUD ? allClauses : newClauses;
                 } else {
                     allClauses.add(resolvent);
                     newClauses.add(resolvent);
                 }
             }
             if (oldClauses.containsAll(newClauses))
-                return newClauses;  //not fount
+                return mode == Mode.LOUD ? allClauses : newClauses;
             else
                 oldClauses.addAll(newClauses);
         }

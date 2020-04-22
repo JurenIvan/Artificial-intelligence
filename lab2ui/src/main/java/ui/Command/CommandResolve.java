@@ -5,7 +5,6 @@ import ui.Mode;
 import ui.model.Clause;
 
 import java.util.Comparator;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class CommandResolve extends AbstractCommand {
@@ -13,20 +12,26 @@ public class CommandResolve extends AbstractCommand {
     private Clause clause;
     private String commandLine;
 
-    public CommandResolve(String commandLine, Mode mode) {
-        super(mode);
+    public CommandResolve(String commandLine) {
         this.commandLine = commandLine.trim();
         commandLine = commandLine.trim();
-        if (commandLine.startsWith("~"))
-            this.clause = new Clause(Clause.counter++, Map.of(commandLine.substring(1), false), null, null);
-        else
-            this.clause = new Clause(Clause.counter++, Map.of(commandLine, true), null, null);
+        this.clause = Clause.parse(commandLine);
+        this.clause.getLiterals().replaceAll((k, v) -> !v);
+
     }
 
     @Override
-    public String execute(BOK bok) {
+    public String execute(BOK bok, Mode mode) {
         StringBuilder sb = new StringBuilder();
-        var result = bok.resolve(clause);
+        var result = bok.resolve(clause, mode);
+
+        if (mode == Mode.QUIET) {
+            if (result.stream().anyMatch(e -> e.getLiterals().isEmpty()))
+                return commandLine + " is true\n";
+            else
+                return commandLine + " is unknown\n";
+        }
+
         result.remove(clause);
 
         for (Clause value : bok.getClauses()) {

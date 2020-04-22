@@ -15,13 +15,6 @@ public class Inputter {
     private List<String> clausesLines;
     private List<String> querriesLines;
 
-    public List<Clause> getClausesLines() {     //todo remove
-        List<Clause> clauses = new ArrayList<>();
-        for (var line : clausesLines) {
-            clauses.add(Clause.parse(line));
-        }
-        return clauses;
-    }
 
     public Inputter(String firstFilePath, String secondFilePath) throws IOException {
         this.clausesLines = filterStrings(Files.readAllLines(Paths.get(firstFilePath)));
@@ -41,5 +34,17 @@ public class Inputter {
 
     public List<String> getCommandsLines() {
         return querriesLines;
+    }
+
+    public List<String> getClausesLines() {
+        return clausesLines;
+    }
+
+    public void setClausesLines(List<String> clausesLines) {
+        this.clausesLines = clausesLines;
+    }
+
+    public void setQuerriesLines(List<String> querriesLines) {
+        this.querriesLines = querriesLines;
     }
 }

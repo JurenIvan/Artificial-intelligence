@@ -1,41 +1,69 @@
 package ui;
 
 import ui.Command.AbstractCommand;
+import ui.model.Clause;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Scanner;
+
+import static ui.Mode.*;
 
 public class Solution {
 
-    private static AbstractCommand abstractCommander;
+    private static String folder;
+    private static Inputter inputter;
+    private static Mode mode = NORMAL;
 
     public static void main(String[] args) throws IOException {
-        Inputter inputter;
-        if (args.length == 2) inputter = new Inputter(args[0], args[1]);
-        else if (args.length == 1) inputter = new Inputter(args[0]);
-        else throw new IllegalArgumentException("Needs one or two arguments");
-
         BOK bok = new BOK();
-        inputter.getClausesLines().forEach(bok::addClause);
-        Mode mode = Mode.LOUD;
 
-        if (args.length == 2) {
-            for (String line : inputter.getCommandsLines()) {
-                System.out.println(AbstractCommand.parse(line.toLowerCase(), mode).execute(bok));
-            }
+        if (args[0].equals("autocnf")) {
+
         }
 
-        if (args.length == 1) {
-            Scanner sc = new Scanner(System.in);
+        if (args[0].equals("resolution")) {
+            inputter = new Inputter(args[1]);
+
+            inputter.setQuerriesLines(List.of(inputter.getClausesLines().get(inputter.getClausesLines().size() - 1) + " ?"));
+            inputter.setClausesLines(inputter.getClausesLines().subList(0, inputter.getClausesLines().size() - 1));
+
+            if (args.length == 3 && "verbose".equals(args[2].trim().toLowerCase())) mode = NORMAL;
+            else mode = QUIET;
+
+            inputter.getClausesLines().forEach(e -> bok.addClause(Clause.parse(e)));
+
+
+            for (String line : inputter.getCommandsLines())
+                System.out.print(AbstractCommand.parse(line.toLowerCase().trim()).execute(bok, mode));
+            return;
+
+
+        } else if (args[0].equals("cooking_interactive")) {
+            inputter = new Inputter(args[1]);
+            mode = "verbose".equals(args[2].trim().toLowerCase()) ? LOUD : NORMAL;
+        } else if (args[0].equals("cooking_test")) {
+            inputter = new Inputter(args[1], args[2]);
+            mode = QUIET;
+        }
+
+        inputter.getClausesLines().forEach(e -> bok.addClause(Clause.parse(e)));
+
+        if (mode == QUIET) {
+            for (String line : inputter.getCommandsLines())
+                System.out.print(AbstractCommand.parse(line.toLowerCase().trim()).execute(bok, mode));
+            return;
+        }
+
+        //else is interactive
+        Scanner sc = new Scanner(System.in);
+        System.out.print(">>> ");
+        while (sc.hasNextLine()) {
+            String next = sc.nextLine().toLowerCase().trim();
+            if ("exit".equals(next.trim().toLowerCase())) return;
+            System.out.println(AbstractCommand.parse(next).execute(bok, mode));
             System.out.print(">>> ");
-            while (sc.hasNextLine()) {
-                String next = sc.nextLine().toLowerCase().trim();
-                if ("exit".equals(next.trim().toLowerCase())) return;
-                System.out.println(AbstractCommand.parse(next, mode).execute(bok));
-                System.out.print(">>> ");
-            }
         }
 
-        return;
     }
 }
