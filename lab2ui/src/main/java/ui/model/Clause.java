@@ -8,6 +8,8 @@ import static ui.model.Relation.*;
 
 public class Clause {
 
+    public static int counter = 1;
+
     private int id;
     private Map<String, Boolean> literals;
     private Clause derivedFirst;
@@ -25,13 +27,7 @@ public class Clause {
             else literals.put(token, false);
         }
 
-        return new Clause(literals, null, null);
-    }
-
-    public Clause(Map<String, Boolean> literals, Clause derivedFirst, Clause derivedSecond) {
-        this.literals = literals;
-        this.derivedFirst = derivedFirst;
-        this.derivedSecond = derivedSecond;
+        return new Clause(Clause.counter++, literals, null, null);
     }
 
     public Clause(int id, Map<String, Boolean> literals, Clause derivedFirst, Clause derivedSecond) {
@@ -39,31 +35,6 @@ public class Clause {
         this.literals = literals;
         this.derivedFirst = derivedFirst;
         this.derivedSecond = derivedSecond;
-    }
-
-    public Map<String, Boolean> getLiterals() {
-        return literals;
-    }
-
-    public void setLiterals(HashMap<String, Boolean> literals) {
-        this.literals = literals;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Clause)) return false;
-        Clause clause = (Clause) o;
-        return getLiterals().equals(clause.getLiterals());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getLiterals());
     }
 
     public Relation relationTo(Clause clause) {
@@ -114,11 +85,32 @@ public class Clause {
                 literals_combined.put(literalEntry.getKey(), literalEntry.getValue());
         }
 
-        return new Clause(literals_combined, this, second);
+        return new Clause(Clause.counter++, literals_combined, this, second);
     }
 
 
+    public Map<String, Boolean> getLiterals() {
+        return literals;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public int getId() {
         return id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Clause)) return false;
+        Clause clause = (Clause) o;
+        return getLiterals().equals(clause.getLiterals());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getLiterals());
     }
 }

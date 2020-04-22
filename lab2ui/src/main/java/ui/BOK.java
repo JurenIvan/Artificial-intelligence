@@ -20,9 +20,7 @@ public class BOK {
     }
 
     public boolean removeClause(Clause clause) {
-        boolean removed = clauses.remove(clause);
-        numerateClauses(clauses);
-        return removed;
+        return clauses.remove(clause);
     }
 
     public static boolean addClauseToList(List<Clause> list, Clause clause) {
@@ -34,36 +32,38 @@ public class BOK {
             if (relation == SAME) return false;
         }
         list.add(clause);
-        numerateClauses(list);
         return true;
     }
 
     private static void numerateClauses(List<Clause> list) {
+        Clause.counter = 1;
         for (int i = 0; i < list.size(); i++)
-            list.get(i).setId(i + 1);
+            list.get(i).setId(Clause.counter++);
     }
 
     public Set<Clause> resolve(Clause clause) {
         numerateClauses(clauses);
-        clause.setId(clauses.size() + 1);
+        clause.setId(Clause.counter++);
         Set<Clause> oldClauses = new HashSet<>(clauses);
         Set<Clause> newClauses = new HashSet<>();
+        List<Clause> allClauses = new ArrayList<>(clauses);
         newClauses.add(clause);
+        allClauses.add(clause);
 
         while (true) {
             for (Pair<Clause, Clause> pair : selectClauses(newClauses, oldClauses)) {
                 Clause resolvent = pair.getFirst().resolve(pair.getSecond());
                 if (resolvent.getLiterals().isEmpty()) {
-                    newClauses.add(resolvent);
+                    allClauses.add(resolvent);
+                    newClauses.add(resolvent);  //fount
                     return newClauses;
                 } else {
-                    if (resolvent.getLiterals().size() < pair.getFirst().getLiterals().size() + pair.getSecond().getLiterals().size()){
-                        resolvent.setId(oldClauses.size() + newClauses.size());
-                    newClauses.add(resolvent);}
+                    allClauses.add(resolvent);
+                    newClauses.add(resolvent);
                 }
             }
             if (oldClauses.containsAll(newClauses))
-                return newClauses;
+                return newClauses;  //not fount
             else
                 oldClauses.addAll(newClauses);
         }
