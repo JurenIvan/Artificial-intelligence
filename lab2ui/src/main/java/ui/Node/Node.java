@@ -47,4 +47,12 @@ public abstract class Node {
     public Node getSecond() {
         return second;
     }
+
+    public void setFirst(Node first) {
+        this.first = first;
+    }
+
+    public void setSecond(Node second) {
+        this.second = second;
+    }
 }
