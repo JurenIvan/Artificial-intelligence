@@ -47,7 +47,7 @@ public class NodeAnd extends Node {
 
     @Override
     public String getValue() {
-        return   first.getValue() + "\n" + second.getValue() ;
+        return "(" + first.getValue() + ") & (" + second.getValue() + ")";
     }
 
     public NodeAnd(Node first, Node second) {
