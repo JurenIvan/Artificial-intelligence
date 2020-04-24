@@ -51,12 +51,14 @@ public class Clause {
         return UNRELATED;
     }
 
-    public boolean hasComplement(Clause clause) {
+    public boolean hasOnlyOneComplement(Clause clause) {
+        int complementsMatchedCounter = 0;
         for (var literal : literals.entrySet()) {
-            if (clause.literals.containsKey(literal.getKey()) && clause.literals.get(literal.getKey()) != literal.getValue())
-                return true;
+            if (clause.literals.containsKey(literal.getKey()) && clause.literals.get(literal.getKey()) != literal.getValue()) {
+                if (++complementsMatchedCounter > 1) return false;
+            }
         }
-        return false;
+        return complementsMatchedCounter == 1;
     }
 
     public String toString() {
