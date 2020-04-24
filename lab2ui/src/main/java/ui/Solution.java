@@ -2,6 +2,7 @@ package ui;
 
 import ui.Command.AbstractCommand;
 import ui.model.Clause;
+import ui.parser.Parser;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,7 +19,10 @@ public class Solution {
         BOK bok = new BOK();
 
         if (args[0].equals("autocnf")) {
+            inputter = new Inputter(args[1]);
 
+            for (String line : inputter.getClausesLines())
+                System.out.println(new Parser().parse(line).convert().getValue());
         }
 
         if (args[0].equals("resolution")) {
@@ -36,7 +40,6 @@ public class Solution {
             for (String line : inputter.getCommandsLines())
                 System.out.print(AbstractCommand.parse(line.toLowerCase().trim()).execute(bok, mode));
             return;
-
 
         } else if (args[0].equals("cooking_interactive")) {
             inputter = new Inputter(args[1]);
