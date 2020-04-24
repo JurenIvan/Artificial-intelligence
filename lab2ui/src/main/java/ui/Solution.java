@@ -5,6 +5,7 @@ import ui.model.Clause;
 import ui.parser.Parser;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Scanner;
 
@@ -32,6 +33,7 @@ public class Solution {
             inputter.setClausesLines(inputter.getClausesLines().subList(0, inputter.getClausesLines().size() - 1));
 
             if (args.length == 3 && "verbose".equals(args[2].trim().toLowerCase())) mode = NORMAL;
+            else if (args.length == 3 && "stacktrace".equals(args[2].trim().toLowerCase())) mode = LOUD;
             else mode = QUIET;
 
             inputter.getClausesLines().forEach(e -> bok.addClause(Clause.parse(e)));
