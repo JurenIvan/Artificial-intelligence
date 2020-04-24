@@ -11,7 +11,6 @@ import static ui.Mode.*;
 
 public class Solution {
 
-    private static String folder;
     private static Inputter inputter;
     private static Mode mode = NORMAL;
 
@@ -41,7 +40,9 @@ public class Solution {
 
         } else if (args[0].equals("cooking_interactive")) {
             inputter = new Inputter(args[1]);
-            mode = "verbose".equals(args[2].trim().toLowerCase()) ? LOUD : NORMAL;
+            if (args.length > 2) {
+                mode = "verbose".equals(args[2].trim().toLowerCase()) ? LOUD : NORMAL;
+            } else mode = NORMAL;
         } else if (args[0].equals("cooking_test")) {
             inputter = new Inputter(args[1], args[2]);
             mode = QUIET;
