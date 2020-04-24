@@ -42,33 +42,30 @@ public class BOK {
         numerateClauses(clauses);
         clause.setId(Clause.counter++);
 
-        Set<Clause> newClauses = new HashSet<>();
         Set<Clause> oldClauses = new HashSet<>(clauses);
-        List<Clause> allClauses = new ArrayList<>();
-
-        newClauses.add(clause);
-        allClauses.add(clause);
+        List<Clause> newClauses = new ArrayList<>(clause.negateDisjunction());
+        List<Clause> allClausesUsed = new LinkedList<>(newClauses);
+        List<Clause> allClausesEver = new LinkedList<>(newClauses);
 
         while (true) {
             for (Pair<Clause, Clause> pair : selectClauses(newClauses, oldClauses)) {
                 Clause resolvent = pair.getFirst().resolve(pair.getSecond());
-                if (resolvent.getLiterals().isEmpty()) {
-                    allClauses.add(resolvent);
-                    newClauses.add(resolvent);
-                    return mode == Mode.LOUD ? allClauses : newClauses;
-                } else {
-                    allClauses.add(resolvent);
-                    newClauses.add(resolvent);
-                }
+
+                allClausesEver.add(resolvent);
+                if (addClauseToList(newClauses, resolvent))
+                    allClausesUsed.add(resolvent);
+
+                if (resolvent.getLiterals().isEmpty())
+                    return mode == Mode.LOUD ? allClausesEver : allClausesUsed;
             }
             if (oldClauses.containsAll(newClauses))
-                return mode == Mode.LOUD ? allClauses : newClauses;
+                return mode == Mode.LOUD ? allClausesEver : newClauses;
             else
                 oldClauses.addAll(newClauses);
         }
     }
 
-    private List<Pair<Clause, Clause>> selectClauses(Set<Clause> newClauses, Set<Clause> oldClauses) {
+    private List<Pair<Clause, Clause>> selectClauses(Collection<Clause> newClauses, Collection<Clause> oldClauses) {
         HashSet<Pair<Clause, Clause>> pairs = new HashSet<>();
 
         for (var newClause : newClauses) {

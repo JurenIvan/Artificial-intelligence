@@ -1,8 +1,6 @@
 package ui.model;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static ui.model.Relation.*;
 
@@ -90,6 +88,11 @@ public class Clause {
         return new Clause(Clause.counter++, literals_combined, this, second);
     }
 
+    public List<Clause> negateDisjunction() {
+        List<Clause> newClauses = new LinkedList<>();
+        literals.forEach((k, v) -> newClauses.add(new Clause(Clause.counter++, Map.of(k, !v), this, this)));
+        return newClauses;
+    }
 
     public Map<String, Boolean> getLiterals() {
         return literals;

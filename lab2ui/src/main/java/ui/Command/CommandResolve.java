@@ -16,8 +16,6 @@ public class CommandResolve extends AbstractCommand {
         this.commandLine = commandLine.trim();
         commandLine = commandLine.trim();
         this.clause = Clause.parse(commandLine);
-        this.clause.getLiterals().replaceAll((k, v) -> !v);
-
     }
 
     @Override
@@ -38,7 +36,7 @@ public class CommandResolve extends AbstractCommand {
             sb.append(value.toString()).append("\n");
         }
         sb.append("=============\n");
-        sb.append(clause.toString()).append("\n");
+        sb.append(" ").append(clause.getId()).append(". ~(").append(commandLine).append(")").append("\n");
         sb.append("=============\n");
 
 
