@@ -24,11 +24,11 @@ public abstract class Node {
     public abstract String getValue();
 
     public Node convert() {
-        this.removeEquivalence();
-        this.removeImplication();
-        this.pushInversion();
-        this.pushDistributivity();
-        return this;
+        Node node = this.removeEquivalence();
+        node = node.removeImplication();
+        node = node.pushInversion();
+        node = node.pushDistributivity();
+        return node;
     }
 
     public Node() {
