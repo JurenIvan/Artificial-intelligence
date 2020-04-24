@@ -74,10 +74,10 @@ public class BOK {
         for (var newClause : newClauses) {
 
             for (var oldClause : oldClauses)
-                if (newClause.hasComplement(oldClause)) pairs.add(new Pair<>(newClause, oldClause));
+                if (newClause.hasOnlyOneComplement(oldClause)) pairs.add(new Pair<>(newClause, oldClause));
 
             for (var alsoNewClause : newClauses)
-                if (newClause.hasComplement(alsoNewClause)) pairs.add(new Pair<>(newClause, alsoNewClause));
+                if (newClause.hasOnlyOneComplement(alsoNewClause)) pairs.add(new Pair<>(newClause, alsoNewClause));
         }
         return new ArrayList<>(pairs);
     }
