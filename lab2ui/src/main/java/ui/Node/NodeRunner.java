@@ -5,16 +5,16 @@ import ui.parser.Parser;
 public class NodeRunner {
 
     private static final String input = "A v B \n" +
-            "~A v B \n" +
-            "(~A v B) & (A v ~B) \n" +
+            "A > B \n" +
+            "A = B \n" +
             "A & B \n" +
-            "A & ~B \n" +
-            "(~A v A) & (~A v ~B) & (B v A) & (B v ~B) \n" +
-            "((A v B) v ~C) & ((A v B) v ~D) & ((~A v ~B) v ~C) & ((~A v ~B) v ~D) \n" +
-            "((A v B) v ~C) & ((A v B) v ~D) & ((~A v ~B) v ~C) & ((~A v ~B) v ~D) \n" +
-            "((C v D) v (A v B)) & ((C v D) v (~A v ~B)) \n" +
-            "~C & ~D & (A v ~A) & (A v ~B) & (B v ~A) & (B v ~B) \n" +
-            "((C v D) v (A v B)) & ((C v D) v (~A v ~B)) ";
+            "~(A > B) \n" +
+            "~(A = B) \n" +
+            "(C v D) > (~A = B) \n" +
+            "(C v D) > (~~~A = B) \n" +
+            "~(C v D) > (~A = B) \n" +
+            "~(~(C v D) > (~A = B)) \n" +
+            "~~(~(C v D) > (~A = B)) \n";
 
     public static void main(String[] args) {
 
