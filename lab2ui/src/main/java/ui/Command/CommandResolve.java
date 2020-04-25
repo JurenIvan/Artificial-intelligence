@@ -26,30 +26,24 @@ public class CommandResolve extends AbstractCommand {
         if (mode == Mode.QUIET) {
             if (result.stream().anyMatch(e -> e.getLiterals().isEmpty()))
                 return commandLine + " is true\n";
-            else
-                return commandLine + " is unknown\n";
+            else return commandLine + " is unknown\n";
         }
 
         result.remove(clause);
 
-        for (Clause value : bok.getClauses()) {
+        for (Clause value : bok.getClauses())
             sb.append(value.toString()).append("\n");
-        }
+
         sb.append("=============\n");
         sb.append(" ").append(clause.getId()).append(". ~(").append(commandLine).append(")").append("\n");
         sb.append("=============\n");
 
-
         var result2 = result.stream().sorted(Comparator.comparingInt(Clause::getId)).collect(Collectors.toList());
-        for (var cause : result2) {
-            sb.append(cause.toString()).append("\n");
-        }
+        for (var cause : result2) sb.append(cause.toString()).append("\n");
         sb.append("=============\n");
 
-        if (result.stream().anyMatch(e -> e.getLiterals().isEmpty()))
-            sb.append(commandLine).append(" is true");
-        else
-            sb.append(commandLine).append(" is unknown");
+        if (result.stream().anyMatch(e -> e.getLiterals().isEmpty())) sb.append(commandLine).append(" is true");
+        else sb.append(commandLine).append(" is unknown");
 
         return sb.toString();
     }
