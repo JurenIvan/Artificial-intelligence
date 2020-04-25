@@ -59,7 +59,7 @@ public class BOK {
                     return mode == Mode.LOUD ? allClausesEver : allClausesUsed;
             }
             if (oldClauses.containsAll(newClauses))
-                return mode == Mode.LOUD ? allClausesEver : newClauses;
+                return mode == Mode.LOUD ? allClausesEver : allClausesUsed;
             else
                 oldClauses.addAll(newClauses);
         }
