@@ -8,7 +8,6 @@ import static ui.parser.TokenType.*;
 
 public class Parser {
 
-    private Node root;
     private Stack<Node> nodes;
     private Stack<Token> tokens;
 
@@ -37,11 +36,7 @@ public class Parser {
                     tokens.pop();
                 }
                 Token token = tokens.pop();
-                Node mother = null;
-                if (token.getTokenType() == IMP) mother = new NodeImplication(null, null);
-                else if (token.getTokenType() == EKV) mother = new NodeEquivalence(null, null);
-                else if (token.getTokenType() == AND) mother = new NodeAnd(null, null);
-                else mother = new NodeOr(null, null);
+                Node mother = getMotherNode(token);
                 Node left = nodes.pop();
                 while (!tokens.isEmpty() && tokens.peek().getTokenType() == NOT) {
                     left.invert();
@@ -59,18 +54,14 @@ public class Parser {
                 nodes.push(mother);
             }
         }
-        while (nodes.size()>1){
-            Node right=nodes.pop();
+        while (nodes.size() > 1) {
+            Node right = nodes.pop();
             while (!tokens.isEmpty() && tokens.peek().getTokenType() == NOT) {
                 right.invert();
                 tokens.pop();
             }
             Token token = tokens.pop();
-            Node mother = null;
-            if (token.getTokenType() == IMP) mother = new NodeImplication(null, null);
-            else if (token.getTokenType() == EKV) mother = new NodeEquivalence(null, null);
-            else if (token.getTokenType() == AND) mother = new NodeAnd(null, null);
-            else mother = new NodeOr(null, null);
+            Node mother = getMotherNode(token);
             Node left = nodes.pop();
             while (!tokens.isEmpty() && tokens.peek().getTokenType() == NOT) {
                 left.invert();
@@ -81,5 +72,14 @@ public class Parser {
             nodes.push(mother);
         }
         return nodes.pop();
+    }
+
+    private Node getMotherNode(Token token) {
+        Node mother;
+        if (token.getTokenType() == IMP) mother = new NodeImplication(null, null);
+        else if (token.getTokenType() == EKV) mother = new NodeEquivalence(null, null);
+        else if (token.getTokenType() == AND) mother = new NodeAnd(null, null);
+        else mother = new NodeOr(null, null);
+        return mother;
     }
 }

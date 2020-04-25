@@ -1,5 +1,7 @@
 package ui.parser;
 
+import static ui.parser.TokenType.*;
+
 public class Lexer {
 
     private int pointer = 0;
@@ -19,41 +21,41 @@ public class Lexer {
 
             if (chars[pointer] == '~') {
                 pointer++;
-                return currentToken = new Token("~", TokenType.NOT);
+                return currentToken = new Token("~", NOT);
             }
             if (chars[pointer] == '(') {
                 pointer++;
-                return currentToken = new Token("(", TokenType.PAR_L);
+                return currentToken = new Token("(", PAR_L);
             }
             if (chars[pointer] == ')') {
                 pointer++;
-                return currentToken = new Token(")", TokenType.PAR_R);
+                return currentToken = new Token(")", PAR_R);
             }
             if (chars[pointer] == 'v') {
                 pointer++;
-                return currentToken = new Token("v", TokenType.OR);
+                return currentToken = new Token("v", OR);
             }
             if (chars[pointer] == '=') {
                 pointer++;
-                return currentToken = new Token("=", TokenType.EKV);
+                return currentToken = new Token("=", EKV);
             }
             if (chars[pointer] == '&') {
                 pointer++;
-                return currentToken = new Token("&", TokenType.AND);
+                return currentToken = new Token("&", AND);
             }
             if (chars[pointer] == '>') {
                 pointer++;
-                return currentToken = new Token(">", TokenType.IMP);
+                return currentToken = new Token(">", IMP);
             }
 
             if (Character.isAlphabetic(chars[pointer])) {
                 while (chars.length > pointer && Character.isAlphabetic(chars[pointer]))
                     sb.append(chars[pointer++]);
-                return currentToken = new Token(sb.toString(), TokenType.TOK);
+                return currentToken = new Token(sb.toString(), TOK);
             }
 
         }
-        return currentToken = new Token(null, TokenType.EOF);
+        return currentToken = new Token(null, EOF);
     }
 
     public Token getCurrentToken() {

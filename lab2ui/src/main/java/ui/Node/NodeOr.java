@@ -63,7 +63,7 @@ public class NodeOr extends Node {
 
     @Override
     public String getValue() {
-        return first.getValue() + "  v  " + second.getValue();
+        return first.getValue() + " v " + second.getValue();
     }
 
     public NodeOr(Node first, Node second) {

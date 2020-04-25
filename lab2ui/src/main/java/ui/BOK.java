@@ -74,7 +74,7 @@ public class BOK {
                 if (newClause.hasOnlyOneComplement(oldClause)) pairs.add(new Pair<>(newClause, oldClause));
 
             for (var alsoNewClause : newClauses)
-                if (newClause.hasOnlyOneComplement(alsoNewClause)) pairs.add(new Pair<>(newClause, alsoNewClause));
+                if (newClause!=alsoNewClause && newClause.hasOnlyOneComplement(alsoNewClause)) pairs.add(new Pair<>(newClause, alsoNewClause));
         }
         return new ArrayList<>(pairs);
     }
