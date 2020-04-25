@@ -5,7 +5,6 @@ import ui.model.Clause;
 import ui.parser.Parser;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Scanner;
 
@@ -17,51 +16,49 @@ public class Solution {
     private static Mode mode = NORMAL;
 
     public static void main(String[] args) throws IOException {
-        BOK bok = new BOK();
+
 
         if (args[0].equals("autocnf")) {
-            inputter = new Inputter(args[1]);
-
-            for (String line : inputter.getClausesLines())
-                System.out.println(new Parser().parse(line).convert().getValue());
+            autoCNFPart(args);
+            return;
         }
 
         if (args[0].equals("resolution")) {
-            inputter = new Inputter(args[1]);
-
-            inputter.setQuerriesLines(List.of(inputter.getClausesLines().get(inputter.getClausesLines().size() - 1) + " ?"));
-            inputter.setClausesLines(inputter.getClausesLines().subList(0, inputter.getClausesLines().size() - 1));
-
-            if (args.length == 3 && "verbose".equals(args[2].trim().toLowerCase())) mode = NORMAL;
-            else if (args.length == 3 && "stacktrace".equals(args[2].trim().toLowerCase())) mode = LOUD;
-            else mode = QUIET;
-
-            inputter.getClausesLines().forEach(e -> bok.addClause(Clause.parse(e)));
-
-
-            for (String line : inputter.getCommandsLines())
-                System.out.print(AbstractCommand.parse(line.toLowerCase().trim()).execute(bok, mode));
+            resolutionPart(args);
             return;
-
-        } else if (args[0].equals("cooking_interactive")) {
-            inputter = new Inputter(args[1]);
-            if (args.length > 2) {
-                mode = "verbose".equals(args[2].trim().toLowerCase()) ? LOUD : NORMAL;
-            } else mode = NORMAL;
-        } else if (args[0].equals("cooking_test")) {
-            inputter = new Inputter(args[1], args[2]);
-            mode = QUIET;
         }
+
+        if (args[0].equals("cooking_interactive")) {
+            cookingInteractivePart(args);
+            return;
+        }
+
+        if (args[0].equals("cooking_test")) {
+            cookingTestPart(args);
+        }
+    }
+
+    private static void cookingTestPart(String[] args) throws IOException {
+        BOK bok=new BOK();
+        inputter = new Inputter(args[1], args[2]);
+        mode = QUIET;
 
         inputter.getClausesLines().forEach(e -> bok.addClause(Clause.parse(e)));
 
-        if (mode == QUIET) {
-            for (String line : inputter.getCommandsLines())
-                System.out.print(AbstractCommand.parse(line.toLowerCase().trim()).execute(bok, mode));
-            return;
-        }
+        for (String line : inputter.getCommandsLines())
+            System.out.print(AbstractCommand.parse(line.toLowerCase().trim()).execute(bok, mode));
+    }
 
-        //else is interactive
+    private static void cookingInteractivePart(String[] args) throws IOException {
+        BOK bok = new BOK();
+        inputter = new Inputter(args[1]);
+
+        if (args.length == 3 && "verbose".equals(args[2].trim().toLowerCase())) mode = NORMAL;
+        else if (args.length == 3 && "stacktrace".equals(args[2].trim().toLowerCase())) mode = LOUD;
+        else mode = QUIET;
+
+        inputter.getClausesLines().forEach(e -> bok.addClause(Clause.parse(e)));
+
         Scanner sc = new Scanner(System.in);
         System.out.print(">>> ");
         while (sc.hasNextLine()) {
@@ -70,6 +67,29 @@ public class Solution {
             System.out.println(AbstractCommand.parse(next).execute(bok, mode));
             System.out.print(">>> ");
         }
+    }
 
+    private static void resolutionPart(String[] args) throws IOException {
+        BOK bok = new BOK();
+        inputter = new Inputter(args[1]);
+
+        inputter.setQuerriesLines(List.of(inputter.getClausesLines().get(inputter.getClausesLines().size() - 1) + " ?"));
+        inputter.setClausesLines(inputter.getClausesLines().subList(0, inputter.getClausesLines().size() - 1));
+
+        if (args.length == 3 && "verbose".equals(args[2].trim().toLowerCase())) mode = NORMAL;
+        else if (args.length == 3 && "stacktrace".equals(args[2].trim().toLowerCase())) mode = LOUD;
+        else mode = QUIET;
+
+        inputter.getClausesLines().forEach(e -> bok.addClause(Clause.parse(e)));
+
+        for (String line : inputter.getCommandsLines())
+            System.out.print(AbstractCommand.parse(line.toLowerCase().trim()).execute(bok, mode));
+    }
+
+    private static void autoCNFPart(String[] args) throws IOException {
+        inputter = new Inputter(args[1]);
+
+        for (String line : inputter.getClausesLines())
+            System.out.println(new Parser().parse(line).convert().getValue());
     }
 }
