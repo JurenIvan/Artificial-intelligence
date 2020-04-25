@@ -3,11 +3,14 @@ package ui.Node;
 public class NodeEquivalence extends Node {
 
     @Override
-    public Node removeEquivalence() {   //todo fix
+    public Node removeEquivalence() {
         Node firstAfterRemove = first.removeEquivalence();
         Node secondAfterRemove = second.removeEquivalence();
 
-        return new NodeAnd(new NodeOr(firstAfterRemove.invert(), secondAfterRemove), new NodeOr(secondAfterRemove.invert(), firstAfterRemove));
+        Node firstCopy = firstAfterRemove.copy();
+        Node secondCopy = secondAfterRemove.copy();
+
+        return new NodeAnd(new NodeOr(firstAfterRemove.invert(), secondAfterRemove), new NodeOr(secondCopy.invert(), firstCopy));
     }
 
     @Override
@@ -27,7 +30,8 @@ public class NodeEquivalence extends Node {
 
     @Override
     public Node copy() {
-        return new NodeEquivalence(first.copy(), second.copy());    }
+        return new NodeEquivalence(first.copy(), second.copy());
+    }
 
     @Override
     public String getValue() {
