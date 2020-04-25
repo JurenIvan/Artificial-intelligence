@@ -5,7 +5,6 @@ import ui.model.Clause;
 import ui.parser.Parser;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Scanner;
 
 import static ui.Mode.*;
@@ -39,8 +38,8 @@ public class Solution {
     }
 
     private static void cookingTestPart(String[] args) throws IOException {
-        BOK bok=new BOK();
-        inputter = new Inputter(args[1], args[2]);
+        BOK bok = new BOK();
+        inputter = Inputter.clausesAndQueries(args[1], args[2]);
         mode = QUIET;
 
         inputter.getClausesLines().forEach(e -> bok.addClause(Clause.parse(e)));
@@ -51,7 +50,7 @@ public class Solution {
 
     private static void cookingInteractivePart(String[] args) throws IOException {
         BOK bok = new BOK();
-        inputter = new Inputter(args[1]);
+        inputter = Inputter.onlyClauses(args[1]);
 
         if (args.length == 3 && "verbose".equals(args[2].trim().toLowerCase())) mode = NORMAL;
         else if (args.length == 3 && "stacktrace".equals(args[2].trim().toLowerCase())) mode = LOUD;
@@ -71,10 +70,7 @@ public class Solution {
 
     private static void resolutionPart(String[] args) throws IOException {
         BOK bok = new BOK();
-        inputter = new Inputter(args[1]);
-
-        inputter.setQuerriesLines(List.of(inputter.getClausesLines().get(inputter.getClausesLines().size() - 1) + " ?"));
-        inputter.setClausesLines(inputter.getClausesLines().subList(0, inputter.getClausesLines().size() - 1));
+        inputter = Inputter.forResolution(args[1]);
 
         if (args.length == 3 && "verbose".equals(args[2].trim().toLowerCase())) mode = NORMAL;
         else if (args.length == 3 && "stacktrace".equals(args[2].trim().toLowerCase())) mode = LOUD;
@@ -87,7 +83,7 @@ public class Solution {
     }
 
     private static void autoCNFPart(String[] args) throws IOException {
-        inputter = new Inputter(args[1]);
+        inputter = Inputter.forResolution(args[1]);
 
         for (String line : inputter.getClausesLines())
             System.out.println(new Parser().parse(line).convert().getValue());

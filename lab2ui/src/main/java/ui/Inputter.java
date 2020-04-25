@@ -10,19 +10,27 @@ import static java.util.stream.Collectors.toList;
 public class Inputter {
 
     private List<String> clausesLines;
-    private List<String> querriesLines;
+    private List<String> queriesLines;
 
-
-    public Inputter(String firstFilePath, String secondFilePath) throws IOException {
-        this.clausesLines = filterStrings(Files.readAllLines(Paths.get(firstFilePath)));
-        this.querriesLines = filterStrings(Files.readAllLines(Paths.get(secondFilePath)));
+    public Inputter(List<String> clausesLines, List<String> queriesLines) {
+        this.clausesLines = clausesLines;
+        this.queriesLines = queriesLines;
     }
 
-    public Inputter(String firstFilePath) throws IOException {
-        this.clausesLines = filterStrings(Files.readAllLines(Paths.get(firstFilePath)));
+    public static Inputter forResolution(String firstFilePath) throws IOException {
+        List<String> fileLines = filterStrings(Files.readAllLines(Paths.get(firstFilePath)));
+        return new Inputter(fileLines.subList(0, fileLines.size() - 1), List.of(fileLines.get(fileLines.size() - 1) + " ?"));
     }
 
-    private List<String> filterStrings(List<String> readAllLines) {
+    public static Inputter onlyClauses(String firstFilePath) throws IOException {
+        return new Inputter(filterStrings(Files.readAllLines(Paths.get(firstFilePath))), null);
+    }
+
+    public static Inputter clausesAndQueries(String firstFilePath, String secondFilePath) throws IOException {
+        return new Inputter(filterStrings(Files.readAllLines(Paths.get(firstFilePath))), filterStrings(Files.readAllLines(Paths.get(secondFilePath))));
+    }
+
+    private static List<String> filterStrings(List<String> readAllLines) {
         return readAllLines.stream()
                 .filter(e -> !e.startsWith("#"))
                 .map(String::toLowerCase)
@@ -30,18 +38,10 @@ public class Inputter {
     }
 
     public List<String> getCommandsLines() {
-        return querriesLines;
+        return queriesLines;
     }
 
     public List<String> getClausesLines() {
         return clausesLines;
-    }
-
-    public void setClausesLines(List<String> clausesLines) {
-        this.clausesLines = clausesLines;
-    }
-
-    public void setQuerriesLines(List<String> querriesLines) {
-        this.querriesLines = querriesLines;
     }
 }
