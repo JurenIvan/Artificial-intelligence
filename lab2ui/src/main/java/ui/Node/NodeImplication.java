@@ -11,7 +11,7 @@ public class NodeImplication extends Node {
 
     @Override
     public Node removeImplication() {
-        return new NodeOr(first.invert(), second);
+        return new NodeOr(first.invert().removeImplication(), second.removeImplication(), inverted);
     }
 
     @Override
@@ -26,7 +26,7 @@ public class NodeImplication extends Node {
 
     @Override
     public Node copy() {
-        return new NodeImplication(first.copy(), second.copy());
+        return new NodeImplication(first.copy(), second.copy(), inverted);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class NodeImplication extends Node {
         throw new UnsupportedOperationException();
     }
 
-    public NodeImplication(Node first, Node second) {
-        super(first, second);
+    public NodeImplication(Node first, Node second, boolean inverted) {
+        super(first, second, inverted);
     }
 }

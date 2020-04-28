@@ -25,7 +25,7 @@ public class NodeAnd extends Node {
             first = first.pushInversion();
             second = second.pushInversion();
 
-            return new NodeOr(first, second);
+            return new NodeOr(first, second, false);
         }
         first = first.pushInversion();
         second = second.pushInversion();
@@ -41,7 +41,7 @@ public class NodeAnd extends Node {
 
     @Override
     public Node copy() {
-        return new NodeAnd(first.copy(), second.copy());
+        return new NodeAnd(first.copy(), second.copy(), inverted);
     }
 
 
@@ -50,7 +50,7 @@ public class NodeAnd extends Node {
         return "(" + first.getValue() + ") & (" + second.getValue() + ")";
     }
 
-    public NodeAnd(Node first, Node second) {
-        super(first, second);
+    public NodeAnd(Node first, Node second, boolean inverted) {
+        super(first, second,inverted);
     }
 }

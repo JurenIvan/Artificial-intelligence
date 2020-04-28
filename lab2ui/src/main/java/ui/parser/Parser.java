@@ -76,10 +76,10 @@ public class Parser {
 
     private Node getMotherNode(Token token) {
         Node mother;
-        if (token.getTokenType() == IMP) mother = new NodeImplication(null, null);
-        else if (token.getTokenType() == EKV) mother = new NodeEquivalence(null, null);
-        else if (token.getTokenType() == AND) mother = new NodeAnd(null, null);
-        else mother = new NodeOr(null, null);
+        if (token.getTokenType() == IMP) mother = new NodeImplication(null, null, false);
+        else if (token.getTokenType() == EKV) mother = new NodeEquivalence(null, null, false);
+        else if (token.getTokenType() == AND) mother = new NodeAnd(null, null, false);
+        else mother = new NodeOr(null, null, false);
         return mother;
     }
 }

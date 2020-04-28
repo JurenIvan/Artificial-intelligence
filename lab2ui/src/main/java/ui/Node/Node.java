@@ -34,6 +34,12 @@ public abstract class Node {
     public Node() {
     }
 
+    public Node(Node first, Node second, boolean inverted) {
+        this.first = first;
+        this.second = second;
+        this.inverted = inverted;
+    }
+
     public Node(Node first, Node second) {
         this.first = first;
         this.second = second;

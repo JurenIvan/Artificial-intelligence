@@ -10,7 +10,7 @@ public class NodeEquivalence extends Node {
         Node firstCopy = firstAfterRemove.copy();
         Node secondCopy = secondAfterRemove.copy();
 
-        return new NodeAnd(new NodeOr(firstAfterRemove.invert(), secondAfterRemove), new NodeOr(secondCopy.invert(), firstCopy));
+        return new NodeAnd(new NodeOr(firstAfterRemove.invert(), secondAfterRemove, false), new NodeOr(secondCopy.invert(), firstCopy, false), inverted);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class NodeEquivalence extends Node {
 
     @Override
     public Node copy() {
-        return new NodeEquivalence(first.copy(), second.copy());
+        return new NodeEquivalence(first.copy(), second.copy(), inverted);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class NodeEquivalence extends Node {
         throw new UnsupportedOperationException();
     }
 
-    public NodeEquivalence(Node first, Node second) {
-        super(first, second);
+    public NodeEquivalence(Node first, Node second, boolean inverted) {
+        super(first, second, inverted);
     }
 }

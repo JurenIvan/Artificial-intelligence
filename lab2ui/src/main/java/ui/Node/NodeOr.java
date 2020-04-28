@@ -25,7 +25,7 @@ public class NodeOr extends Node {
             first = first.pushInversion();
             second = second.pushInversion();
 
-            return new NodeAnd(first, second);
+            return new NodeAnd(first, second, false);
         }
 
         first = first.pushInversion();
@@ -42,15 +42,15 @@ public class NodeOr extends Node {
         Node newFirst, newSecond;
 
         if (first instanceof NodeAnd) {
-            newFirst = new NodeOr(second, first.getFirst());
-            newSecond = new NodeOr(second, first.getSecond());
-            return new NodeAnd(newFirst.pushDistributivity(), newSecond.pushDistributivity());
+            newFirst = new NodeOr(second, first.getFirst(), false);
+            newSecond = new NodeOr(second, first.getSecond(), false);
+            return new NodeAnd(newFirst.pushDistributivity(), newSecond.pushDistributivity(), inverted);
 
         }
         if (second instanceof NodeAnd) {
-            newFirst = new NodeOr(first, second.getFirst());
-            newSecond = new NodeOr(first, second.getSecond());
-            return new NodeAnd(newFirst.pushDistributivity(), newSecond.pushDistributivity());
+            newFirst = new NodeOr(first, second.getFirst(), false);
+            newSecond = new NodeOr(first, second.getSecond(), false);
+            return new NodeAnd(newFirst.pushDistributivity(), newSecond.pushDistributivity(), inverted);
         }
 
         return this;
@@ -58,7 +58,7 @@ public class NodeOr extends Node {
 
     @Override
     public Node copy() {
-        return new NodeOr(first.copy(), second.copy());
+        return new NodeOr(first.copy(), second.copy(), inverted);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class NodeOr extends Node {
         return first.getValue() + " v " + second.getValue();
     }
 
-    public NodeOr(Node first, Node second) {
-        super(first, second);
+    public NodeOr(Node first, Node second, boolean inverted) {
+        super(first, second, inverted);
     }
 }
