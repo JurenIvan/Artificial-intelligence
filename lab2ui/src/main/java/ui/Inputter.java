@@ -3,8 +3,12 @@ package ui;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
 import static java.util.stream.Collectors.toList;
 
 public class Inputter {
@@ -13,7 +17,30 @@ public class Inputter {
     private List<String> queriesLines;
 
     public Inputter(List<String> clausesLines, List<String> queriesLines) {
-        this.clausesLines = clausesLines;
+        this.clausesLines = new ArrayList<>();
+
+        outher:
+        for (var line : clausesLines) {
+            HashMap<String, Boolean> literals = new HashMap<>();
+
+            for (String token : line.split(" ")) {
+                token = token.trim().toLowerCase();
+                if (token.isBlank()) continue;
+                if (token.equals("v")) continue;
+                if (token.startsWith("~")) {
+                    if (literals.containsKey(token.substring(1)) && FALSE.equals(literals.get(token.substring(1))))
+                        continue outher;
+                    else literals.put(token.substring(1), true);
+                } else {
+                    if (literals.containsKey(token.substring(1)) && TRUE.equals(literals.get(token.substring(1))))
+                        continue outher;
+                    literals.put(token, false);
+                }
+            }
+            this.clausesLines.add(line);
+        }
+
+
         this.queriesLines = queriesLines;
     }
 
