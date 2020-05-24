@@ -10,7 +10,7 @@ import static java.util.stream.Collectors.toList;
 
 public abstract class AbstractMLAlgorithm implements MLAlgorithm {
 
-    private Map<String, String> args;
+    protected Map<String, String> args;
 
     @Override
     public void configure(Map<String, String> args) {
@@ -56,5 +56,14 @@ public abstract class AbstractMLAlgorithm implements MLAlgorithm {
             }
         }
         return maxAttr;
+    }
+
+    protected String mostCommonClassifier(List<Entry> filtered) {
+
+        HashMap<String, Integer> nums = new HashMap<>();
+        filtered.forEach(e -> nums.compute(e.getValue(Entry.getClassifierName()), (k, v) -> v == null ? 1 : v + 1));
+        long cnt = nums.values().stream().mapToInt(integer -> integer).max().orElse(-1);
+        return nums.entrySet().stream().filter(e -> e.getValue() == cnt).max(Map.Entry.comparingByKey()).get().getKey();
+
     }
 }

@@ -23,11 +23,15 @@ public class ID3 extends AbstractMLAlgorithm {
 
     private TreeElement id3(List<Entry> filtered, List<String> attrNames, int d) {
         if (filtered.isEmpty())
-            return new Leaf(d, mostCommonClassifier());
+            return new Leaf(d, Entry.mostCommonClassifier());
 
         var classValued = filtered.get(0).getValue(getClassifierName());
         if (attrNames.isEmpty() || filtered.stream().allMatch(e -> e.getValue(getClassifierName()).equals(classValued)))
             return new Leaf(d, classValued);
+
+        if (d == Integer.parseInt(args.get("max_depth"))){
+            return new Leaf(d, mostCommonClassifier(filtered));
+        }
 
         var x = maxInformationGainForAttr(filtered);
         var subtrees = new HashMap<String, TreeElement>();

@@ -13,6 +13,7 @@ public class Solution {
         Inputter inputter = Inputter.getInstance(args[0], args[1], args[2]);
 
         var id3 = new ID3();
+        id3.configure(inputter.getConfigArgs());
         id3.fit(inputter.getTrainingEntries());
         System.out.println(id3);
         List<String> solutions = new ArrayList<>();

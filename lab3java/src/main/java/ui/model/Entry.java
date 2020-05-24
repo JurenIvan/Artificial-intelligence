@@ -3,7 +3,7 @@ package ui.model;
 import java.util.*;
 
 import static java.util.Arrays.asList;
-import static java.util.Map.Entry.*;
+import static java.util.Comparator.*;
 
 public class Entry {
 
@@ -61,7 +61,10 @@ public class Entry {
     public static String mostCommonClassifier() {
         if (mostCommonClassifier != null)
             return mostCommonClassifier;
-        return mostCommonClassifier = classifiersCount.entrySet().stream().max(comparingByValue()).get().getKey();
+
+
+        long cnt = classifiersCount.values().stream().mapToInt(integer -> integer).max().orElse(-1);
+        return mostCommonClassifier = classifiersCount.entrySet().stream().filter(e->e.getValue()==cnt).max(Map.Entry.comparingByKey()).get().getKey();
     }
 
     private Entry() {
