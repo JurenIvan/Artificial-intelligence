@@ -35,8 +35,7 @@ public abstract class AbstractMLAlgorithm implements MLAlgorithm {
     }
 
     public static double informationGain(List<Entry> entries, String arg) {
-        double ed = entropy(entries, Entry.getClassifierName());
-        double ig = ed;
+        double ig = entropy(entries, Entry.getClassifierName());
 
         for (var val : Entry.getPossibleValues(arg)) {
             List<Entry> filtered = entries.stream().filter(e -> e.getValue(arg).equals(val)).collect(toList());
@@ -44,5 +43,18 @@ public abstract class AbstractMLAlgorithm implements MLAlgorithm {
         }
 
         return ig;
+    }
+
+    protected String maxInformationGainForAttr(List<Entry> dataset) {
+        String maxAttr = null;
+        double maxIg = 0;
+        for (var attr : Entry.getAttrNames()) {
+            double ig = informationGain(dataset, attr);
+            if (ig > maxIg || maxAttr == null) {
+                maxAttr = attr;
+                maxIg = ig;
+            }
+        }
+        return maxAttr;
     }
 }

@@ -2,24 +2,32 @@ package ui.model;
 
 import java.util.HashMap;
 
-public class Node {
+public class Node extends TreeElement {
 
-    private HashMap<String, Node> children;
-    private final int d;
+    private final HashMap<String, TreeElement> children;
     private final String attr;
 
-    public Node(int d, String attr) {
-        this.d = d;
+    public Node(String attr, int d, HashMap<String, TreeElement> children) {
+        super(d);
         this.attr = attr;
-    }
-
-    public Node(String attr, int d, HashMap<String, Node> children) {
-        this.attr = attr;
-        this.d = d;
         this.children = children;
     }
 
-    public int getD() {
-        return d;
+
+    @Override
+    public String result(Entry entry) {
+        return children.get(entry.getValue(attr)).result(entry);
+    }
+
+    @Override
+    public String printTree() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(d).append(":").append(attr);
+        for (var child : children.values()) {
+            if (child instanceof Leaf) continue;
+            sb.append(", ");
+            sb.append(child.printTree());
+        }
+        return sb.toString();
     }
 }
