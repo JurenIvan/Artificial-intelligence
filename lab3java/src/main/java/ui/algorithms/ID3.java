@@ -9,44 +9,54 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
 import static ui.model.Entry.*;
 
 public class ID3 extends AbstractMLAlgorithm {
 
     private TreeElement root;
+    private List<String> attrNames;
+
+    public ID3(List<String> attrNames) {
+        this.attrNames = attrNames;
+    }
 
     @Override
     public void fit(List<Entry> dataset) {
-        root = id3(dataset, getAttrNames(), 0);
+        root = id3(dataset, attrNames, 0);
     }
 
-    private TreeElement id3(List<Entry> filtered, List<String> attrNames, int d) {
+    protected TreeElement id3(List<Entry> filtered, List<String> attrNames, int d) {
         if (filtered.isEmpty())
-            return new Leaf(d, Entry.mostCommonClassifier());
+            return new Leaf(d, mostCommonClassifier(filtered)); //never executed
 
-        var classValued = filtered.get(0).getValue(getClassifierName());
-        if (attrNames.isEmpty() || filtered.stream().allMatch(e -> e.getValue(getClassifierName()).equals(classValued)))
-            return new Leaf(d, classValued);
-
-        if (d == Integer.parseInt(args.get("max_depth"))){
+        if (attrNames.isEmpty()) {
             return new Leaf(d, mostCommonClassifier(filtered));
         }
 
-        var x = maxInformationGainForAttr(filtered);
+        var classValued = filtered.get(0).getValue(getClassifierName());
+        if (filtered.stream().allMatch(e -> e.getValue(getClassifierName()).equals(classValued)))
+            return new Leaf(d, classValued);
+
+        if (d == Integer.parseInt(args.getOrDefault("max_depth", "-1"))) {
+            return new Leaf(d, mostCommonClassifier(filtered));
+        }
+
+        var x = maxInformationGainForAttr(filtered, attrNames);
         var subtrees = new HashMap<String, TreeElement>();
         for (var v : getPossibleValues(x)) {
             var attrSublist = new ArrayList<>(attrNames);
             attrSublist.remove(x);
-            var t = id3(filterDataset(filtered, x, v), attrSublist, d + 1);
+            var filteredEntries = filterDataset(filtered, x, v);
+
+            TreeElement t;
+            if (filteredEntries.isEmpty())
+                t = new Leaf(d + 1, mostCommonClassifier(filtered));
+            else
+                t = id3(filteredEntries, attrSublist, d + 1);
             subtrees.put(v, t);
         }
 
         return new Node(x, d, subtrees);
-    }
-
-    private List<Entry> filterDataset(List<Entry> filtered, String attrName, String attrValue) {
-        return filtered.stream().filter(e -> e.getValue(attrName).equals(attrValue)).collect(toList());
     }
 
     @Override

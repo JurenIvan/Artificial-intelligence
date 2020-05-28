@@ -14,9 +14,8 @@ public abstract class AbstractMLAlgorithm implements MLAlgorithm {
 
     @Override
     public void configure(Map<String, String> args) {
-        if (this.args != null) {
+        if (this.args != null)
             throw new IllegalStateException();
-        }
         this.args = args;
     }
 
@@ -45,12 +44,12 @@ public abstract class AbstractMLAlgorithm implements MLAlgorithm {
         return ig;
     }
 
-    protected String maxInformationGainForAttr(List<Entry> dataset) {
+    protected String maxInformationGainForAttr(List<Entry> dataset, List<String> attrNames) {
         String maxAttr = null;
         double maxIg = 0;
-        for (var attr : Entry.getAttrNames()) {
+        for (var attr : attrNames) {
             double ig = informationGain(dataset, attr);
-            if (ig > maxIg || maxAttr == null) {
+            if (ig > maxIg || maxAttr == null || ig == maxIg && attr.compareTo(maxAttr) < 0) {
                 maxAttr = attr;
                 maxIg = ig;
             }
@@ -63,7 +62,10 @@ public abstract class AbstractMLAlgorithm implements MLAlgorithm {
         HashMap<String, Integer> nums = new HashMap<>();
         filtered.forEach(e -> nums.compute(e.getValue(Entry.getClassifierName()), (k, v) -> v == null ? 1 : v + 1));
         long cnt = nums.values().stream().mapToInt(integer -> integer).max().orElse(-1);
-        return nums.entrySet().stream().filter(e -> e.getValue() == cnt).max(Map.Entry.comparingByKey()).get().getKey();
+        return nums.entrySet().stream().filter(e -> e.getValue() == cnt).min(Map.Entry.comparingByKey()).get().getKey();
+    }
 
+    protected List<Entry> filterDataset(List<Entry> filtered, String attrName, String attrValue) {
+        return filtered.stream().filter(e -> e.getValue(attrName).equals(attrValue)).collect(toList());
     }
 }

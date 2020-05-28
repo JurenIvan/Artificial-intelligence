@@ -16,7 +16,9 @@ public class Node extends TreeElement {
 
     @Override
     public String result(Entry entry) {
-        return children.get(entry.getValue(attr)).result(entry);
+        var child=children.get(entry.getValue(attr));
+        if(child==null) Entry.mostCommonClassifier();
+        return child.result(entry);
     }
 
     @Override

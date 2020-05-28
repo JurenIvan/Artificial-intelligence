@@ -3,7 +3,6 @@ package ui.model;
 import java.util.*;
 
 import static java.util.Arrays.asList;
-import static java.util.Comparator.*;
 
 public class Entry {
 
@@ -55,7 +54,8 @@ public class Entry {
     }
 
     public static Set<String> getPossibleValues(String arg) {
-        return possibleValues.get(arg);
+        var result = possibleValues.get(arg);
+        return result != null ? result : new HashSet<>();
     }
 
     public static String mostCommonClassifier() {
@@ -64,7 +64,7 @@ public class Entry {
 
 
         long cnt = classifiersCount.values().stream().mapToInt(integer -> integer).max().orElse(-1);
-        return mostCommonClassifier = classifiersCount.entrySet().stream().filter(e->e.getValue()==cnt).max(Map.Entry.comparingByKey()).get().getKey();
+        return mostCommonClassifier = classifiersCount.entrySet().stream().filter(e -> e.getValue() == cnt).max(Map.Entry.comparingByKey()).get().getKey();
     }
 
     private Entry() {
