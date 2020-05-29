@@ -9,12 +9,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static ui.model.Entry.*;
+import static ui.model.Entry.getClassifierName;
+import static ui.model.Entry.getPossibleValues;
 
 public class ID3 extends AbstractMLAlgorithm {
 
     private TreeElement root;
-    private List<String> attrNames;
+    private final List<String> attrNames;
 
     public ID3(List<String> attrNames) {
         this.attrNames = attrNames;
@@ -56,7 +57,7 @@ public class ID3 extends AbstractMLAlgorithm {
             subtrees.put(v, t);
         }
 
-        return new Node(x, d, subtrees);
+        return new Node(x, d, subtrees, mostCommonClassifier(filtered));
     }
 
     @Override

@@ -10,7 +10,6 @@ public class Entry {
     private static final Map<String, Integer> attrOrder = new HashMap<>();
     private static final Map<String, Set<String>> possibleValues = new HashMap<>();
     private static final Map<String, Integer> classifiersCount = new HashMap<>();
-    private static String mostCommonClassifier;
     private static String classifierName;
 
     private List<String> values;
@@ -56,15 +55,6 @@ public class Entry {
     public static Set<String> getPossibleValues(String arg) {
         var result = possibleValues.get(arg);
         return result != null ? result : new HashSet<>();
-    }
-
-    public static String mostCommonClassifier() {
-        if (mostCommonClassifier != null)
-            return mostCommonClassifier;
-
-
-        long cnt = classifiersCount.values().stream().mapToInt(integer -> integer).max().orElse(-1);
-        return mostCommonClassifier = classifiersCount.entrySet().stream().filter(e -> e.getValue() == cnt).max(Map.Entry.comparingByKey()).get().getKey();
     }
 
     private Entry() {

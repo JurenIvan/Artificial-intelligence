@@ -12,7 +12,6 @@ import static ui.model.Entry.*;
 public class Solution {
 
     public static void main(String[] args) {
-
         Inputter inputter = Inputter.getInstance(args[0], args[1], args[2]);
         MLAlgorithm mlAlgorithm = inputter.getConfigArgs().get("model").equals("ID3") ? new ID3(getAttrNames()) : new RF();
         mlAlgorithm.configure(inputter.getConfigArgs());
