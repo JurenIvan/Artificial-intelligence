@@ -7,9 +7,9 @@ import java.util.stream.IntStream;
 
 import static java.lang.Math.round;
 import static java.util.Comparator.comparingInt;
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 import static ui.model.Entry.getAttrNames;
-import static ui.model.Entry.getClassifierName;
 
 public class RF extends AbstractMLAlgorithm {
 
@@ -36,10 +36,12 @@ public class RF extends AbstractMLAlgorithm {
             int featureSubset = (int) round(featureRatio * getAttrNames().size() - 0.001);
 
             var copiedAttrs = new ArrayList<>(Entry.getAttrNames());
-            var copiedInstances = new ArrayList<>(IntStream.range(0, dataset.size()).boxed().collect(toCollection(ArrayList::new)));
-
             Collections.shuffle(copiedAttrs);
-            Collections.shuffle(copiedInstances);
+
+            var copiedInstances = new ArrayList<Integer>();
+            for (int j = 0; j < instanceSubset; j++) {
+                copiedInstances.add(Math.abs(random.nextInt()% dataset.size()) );
+            }
 
             List<Entry> filtered = IntStream.range(0, instanceSubset).mapToObj(e -> dataset.get(copiedInstances.get(e))).collect(toList());
             List<String> attrs = IntStream.range(0, featureSubset).mapToObj(e -> copiedAttrs.get(e)).collect(toList());
